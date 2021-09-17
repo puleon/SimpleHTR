@@ -7,9 +7,6 @@ The code was adapted from [SimpleHTR](https://github.com/githubharald/SimpleHTR)
 The code was tested with `python3.7.6`.
 
 ```
-git clone git@github.com:puleon/SimpleHTR.git
-export ROOT_DIR = ./SimpleHTR
-cd $ROOT_DIR
 pip install -r requirements.txt
 ```
 
