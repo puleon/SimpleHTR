@@ -130,6 +130,30 @@ def infer(model: Model, fn_img: Path) -> None:
 
     batch = Batch([img], None, 1)
     recognized, probability = model.infer_batch(batch, True)
+    print(f'Recognized: "{recognized[0]}"')
+    print(f'Probability: {probability[0]}')
+
+
+def predict(img_file: str, decoder='bestpath') -> None:
+    """Restores the model and recognizes text in image provided by file path."""
+    
+    decoder_mapping = {'bestpath': DecoderType.BestPath,
+                       'beamsearch': DecoderType.BeamSearch,
+                       'wordbeamsearch': DecoderType.WordBeamSearch}
+    decoder_type = decoder_mapping[decoder]
+
+    fn_img = Path(img_file)
+
+    model = Model(list(open(FilePaths.fn_char_list).read()), decoder_type, must_restore=True, dump=False)
+    
+    img = cv2.imread(fn_img, cv2.IMREAD_GRAYSCALE)
+    assert img is not None
+
+    preprocessor = Preprocessor(get_img_size(), dynamic_width=True, padding=16)
+    img = preprocessor.process_img(img)
+
+    batch = Batch([img], None, 1)
+    recognized, probability = model.infer_batch(batch, True)
 
     return {'recognized': recognized[0], 'probability': probability[0]}
 
@@ -147,7 +171,7 @@ def main(args):
     parser.add_argument('--img_file', help='Image used for inference.', type=Path, default='../data/word.png')
     parser.add_argument('--early_stopping', help='Early stopping epochs.', type=int, default=25)
     parser.add_argument('--dump', help='Dump output of NN to CSV file(s).', action='store_true')
-    args = parser.parse_args(args)
+    args = parser.parse_args()
 
     # set chosen CTC decoder
     decoder_mapping = {'bestpath': DecoderType.BestPath,
@@ -187,5 +211,5 @@ def main(args):
 
 if __name__ == '__main__':
 
-    main(sys.argv[1:])
+    main()
 
