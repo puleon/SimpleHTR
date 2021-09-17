@@ -1,6 +1,7 @@
 import argparse
 import json
 from typing import Tuple, List
+import sys
 
 import cv2
 import editdistance
@@ -133,7 +134,7 @@ def infer(model: Model, fn_img: Path) -> None:
     return {'recognized': recognized[0], 'probability': probability[0]}
 
 
-def main():
+def main(args):
     """Main function."""
     parser = argparse.ArgumentParser()
 
@@ -146,7 +147,7 @@ def main():
     parser.add_argument('--img_file', help='Image used for inference.', type=Path, default='../data/word.png')
     parser.add_argument('--early_stopping', help='Early stopping epochs.', type=int, default=25)
     parser.add_argument('--dump', help='Dump output of NN to CSV file(s).', action='store_true')
-    args = parser.parse_args()
+    args = parser.parse_args(args)
 
     # set chosen CTC decoder
     decoder_mapping = {'bestpath': DecoderType.BestPath,
@@ -185,4 +186,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+
+    main(sys.argv[1:])
+
