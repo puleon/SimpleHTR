@@ -134,17 +134,8 @@ def infer(model: Model, fn_img: Path) -> None:
     print(f'Probability: {probability[0]}')
 
 
-def predict(img_file: str, decoder='bestpath') -> None:
-    """Restores the model and recognizes text in image provided by file path."""
-    
-    decoder_mapping = {'bestpath': DecoderType.BestPath,
-                       'beamsearch': DecoderType.BeamSearch,
-                       'wordbeamsearch': DecoderType.WordBeamSearch}
-    decoder_type = decoder_mapping[decoder]
-
-    fn_img = Path(img_file)
-
-    model = Model(list(open(FilePaths.fn_char_list).read()), decoder_type, must_restore=True, dump=False)
+def predict(model: Model, fn_img: Path) -> None:
+    """Recognizes text in image provided by file path."""
     
     img = cv2.imread(fn_img, cv2.IMREAD_GRAYSCALE)
     assert img is not None
